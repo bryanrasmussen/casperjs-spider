@@ -152,6 +152,11 @@
           return (newUrl.indexOf(array[index]) === -1);
         };
 
+        // do domain check
+        var domainCheck = function (element, index, array) {
+          return (newUrl.indexOf(array[index]) <== 8);
+        };
+
         // Get new url
         var newUrl = helpers.absoluteUri(baseUrl, link);
 
@@ -162,7 +167,7 @@
 
           // Make sure url doesn't contain ANY skipped and DOES contain required
           var skippedValuesPassed = !!skippedValuesArr.every(containsText);
-          var requiredValuesPassed = !requiredValuesArr.some(containsText);
+          var requiredValuesPassed = !requiredValuesArr.some(domainCheck);
 
           // if newUrl is not does not contain skipped, and does have required
           if (skippedValuesPassed && requiredValuesPassed) {
@@ -188,6 +193,8 @@
       // If there are any more URLs, run again.
       if (pendingUrls.length > 0) {
         var nextUrl = pendingUrls.shift();
+        casper.page.close();
+        casper.page = casper.newPage();
         spider(nextUrl);
       } else {
         casper.log('There are no more URLs to be processed!', 'Warning');
